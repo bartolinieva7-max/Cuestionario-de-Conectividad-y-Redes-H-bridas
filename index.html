@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Cuestionario: Conectividad y Redes Híbridas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffe6b0 0%, #ffd4e8 100%);
+            font-family: 'Segoe UI', 'Roboto', 'Poppins', system-ui, sans-serif;
+            padding: 1rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quiz-wrapper {
+            max-width: 780px;
+            width: 100%;
+            margin: 0 auto;
+            background: #ffffffdd;
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 200, 100, 0.6);
+            padding: 1.5rem;
+            transition: all 0.2s;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1.2rem;
+            border-bottom: 3px solid #ffcc88;
+            padding-bottom: 0.7rem;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #d97a2b, #e85d8a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.2px;
+        }
+
+        .sub {
+            color: #cc7b4a;
+            font-size: 0.85rem;
+            margin-top: 0.2rem;
+            font-weight: 500;
+        }
+
+        .progress-area {
+            background: #fff2df;
+            border-radius: 2rem;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #a05a2c;
+            font-weight: 600;
+        }
+
+        .question-counter {
+            font-weight: 700;
+            background: #ffe1b3;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+        }
+
+        .score-badge {
+            background: #c0e0d0;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            font-weight: 600;
+        }
+
+        .question-card {
+            background: #ffffff;
+            border-radius: 1.5rem;
+            padding: 1.3rem;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
+            border: 1px solid #ffe2bc;
+        }
+
+        .question-text {
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: #5c3b1f;
+            margin-bottom: 1.2rem;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            cursor: pointer;
+            padding: 0.6rem 0.8rem;
+            border-radius: 1rem;
+            background: #fefaf5;
+            border: 1px solid #f5d6b0;
+            transition: all 0.15s;
+        }
+
+        .option:hover {
+            background: #fff4e6;
+            border-color: #e6b87e;
+        }
+
+        input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 1.2rem;
+            height: 1.2rem;
+            border: 2px solid #d98c5f;
+            border-radius: 50%;
+            margin-top: 0.1rem;
+            cursor: pointer;
+            background: white;
+            flex-shrink: 0;
+        }
+
+        input[type="radio"]:checked {
+            background-color: #f2a65a;
+            border-color: #f2a65a;
+            box-shadow: inset 0 0 0 3px white;
+        }
+
+        .option label {
+            flex: 1;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            cursor: pointer;
+            color: #6b4a2a;
+            font-weight: 500;
+        }
+
+        .feedback {
+            margin-top: 0.8rem;
+            padding: 0.7rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            background: #fef7e8;
+            border-left: 5px solid;
+            line-height: 1.4;
+            color: #5e5a5a;
+        }
+
+        .feedback.correct {
+            border-left-color: #6fbf6f;
+            background: #e6f5e6;
+        }
+
+        .feedback.incorrect {
+            border-left-color: #e68a8a;
+            background: #ffe6e6;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            border: none;
+            background: #f0dbbc;
+            color: #9b5e2c;
+            font-weight: 700;
+            padding: 0.6rem 1.3rem;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .btn-primary {
+            background: #c7e0d0;
+            color: #4e6b4e;
+        }
+
+        .btn-primary:hover {
+            background: #b0d4be;
+            transform: scale(1.02);
+        }
+
+        .btn-secondary {
+            background: #f9e0c0;
+            color: #b46a3a;
+        }
+
+        .btn-secondary:hover {
+            background: #fcd6a8;
+        }
+
+        .btn-reset {
+            background: #ffe0b5;
+            color: #c97a3e;
+        }
+
+        .btn-reset:hover {
+            background: #ffd6a0;
+        }
+
+        .results-area {
+            margin-top: 1.5rem;
+            background: #fffaf0;
+            border-radius: 1.2rem;
+            padding: 1rem;
+            border: 1px solid #f5debc;
+            display: none;
+        }
+
+        .results-area h3 {
+            color: #bd7a42;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-summary {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: bold;
+            color: #9e633a;
+        }
+
+        .result-detail {
+            max-height: 260px;
+            overflow-y: auto;
+            font-size: 0.8rem;
+        }
+
+        .result-item {
+            padding: 0.4rem;
+            border-bottom: 1px solid #f2debc;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            margin-top: 1.2rem;
+            color: #c9a26e;
+        }
+
+        @media (max-width: 550px) {
+            .quiz-wrapper {
+                padding: 1rem;
+            }
+            .question-text {
+                font-size: 0.98rem;
+            }
+            .option label {
+                font-size: 0.88rem;
+            }
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="quiz-wrapper">
+    <div class="header">
+        <h1>📡 Conectividad y Redes Híbridas</h1>
+        <div class="sub">Wi‑Fi, espectro, backhaul, Wi‑Fi 6/7 y arquitectura de red</div>
+    </div>
+
+    <div class="progress-area">
+        <span class="question-counter" id="questionCounter">Pregunta 1 / 20</span>
+        <span class="score-badge" id="liveScore">✅ Aciertos: 0</span>
+    </div>
+
+    <div id="questionContainer"></div>
+
+    <div class="nav-buttons">
+        <button id="prevBtn" class="btn btn-secondary">◀ Anterior</button>
+        <button id="nextBtn" class="btn btn-primary">Siguiente ▶</button>
+        <button id="resetBtn" class="btn btn-reset">⟳ Reiniciar</button>
+    </div>
+
+    <div id="resultsPanel" class="results-area"></div>
+    <footer>📌 Selecciona una opción → retroalimentación inmediata. Al finalizar, revisa tu puntuación.</footer>
+</div>
+
+<script>
+    // ==================== DATOS DEL CUESTIONARIO (20 preguntas) ====================
+    const questionsData = [
+        { text: "¿Cuál es el principal motivo por el cual un usuario con fibra de 1 Gbps suele experimentar solo entre 50-100 Mbps reales?",
+          options: ["La fibra óptica pierde velocidad al entrar al hogar.", "El 'último salto' inalámbrico actúa como un cuello de botella.", "Las empresas proveedoras de internet (ISP) engañan con la velocidad contratada."],
+          correct: "B",
+          explanation: "Correcta (B): El medio inalámbrico compartido limita la experiencia final. A es incorrecta (la fibra llega a 1 Gbps hasta la puerta); C no es el problema técnico principal."
+        },
+        { text: "Según las leyes de la física, ¿qué material representa la 'barrera crítica' que puede reducir la señal Wi-Fi a la mitad?",
+          options: ["Madera.", "Vidrio.", "Hormigón Armado."],
+          correct: "C",
+          explanation: "Correcta (C): Hormigón armado causa pérdida de 10-20 dB. Madera (2-4 dB) y vidrio (3-5 dB) solo degradan levemente."
+        },
+        { text: "¿Qué sucede con el rendimiento del Wi-Fi si la señal atraviesa dos paredes de hormigón?",
+          options: ["La señal se mantiene estable gracias a la arquitectura híbrida.", "La pérdida acumulada de 30-40 dB destruye el rendimiento.", "La velocidad aumenta por el rebote de la señal."],
+          correct: "B",
+          explanation: "Correcta (B): Atenuación acumulativa ineludible. A y C ignoran la degradación exponencial."
+        },
+        { text: "¿Cómo se define técnicamente el aire como medio de transmisión en redes Wi-Fi?",
+          options: ["Full-duplex.", "Half-duplex.", "Multiplexado por cable."],
+          correct: "B",
+          explanation: "Correcta (B): Half-duplex: si dos dispositivos transmiten a la vez, colisionan. A es falso; C es cableado."
+        },
+        { text: "En entornos urbanos de alta densidad, ¿cuál es el tercer paso del 'Colapso del Medio Compartido'?",
+          options: ["Competencia.", "Colisión.", "Espera Activa."],
+          correct: "C",
+          explanation: "Correcta (C): Tras colisión, los dispositivos entran en espera activa, multiplicando latencia. A paso 1, B paso 2."
+        },
+        { text: "¿Cuál es el enfoque principal que diferencia a Wi-Fi 6 de las generaciones anteriores como Wi-Fi 5?",
+          options: ["Solo el aumento de la velocidad bruta.", "La eficiencia en entornos saturados mediante mejor orquestación.", "La eliminación total de los cables de red."],
+          correct: "B",
+          explanation: "Correcta (B): Wi-Fi 6 prioriza eficiencia y capacidad. A era enfoque de Wi-Fi 5; C es falso."
+        },
+        { text: "¿Qué tecnología introducida en Wi-Fi 6 permite subdividir el canal para realizar entregas simultáneas a múltiples dispositivos?",
+          options: ["MU-MIMO mejorado.", "OFDMA (Orthogonal Frequency Division Multiple Access).", "Target Wake Time."],
+          correct: "B",
+          explanation: "Correcta (B): OFDMA subdivide el canal para transmisiones paralelas. A y C son otras funciones de Wi-Fi 6."
+        },
+        { text: "¿Cuál es la principal ventaja de la banda de 6 GHz introducida con Wi-Fi 6E y Wi-Fi 7?",
+          options: ["Tiene la mayor penetración de paredes.", "Está saturada por dispositivos antiguos, lo que la hace más compatible.", "Es una 'autopista vacía' con saturación nula e interferencia cero de dispositivos antiguos."],
+          correct: "C",
+          explanation: "Correcta (C): Banda 6 GHz está limpia sin dispositivos legacy. A es falso (baja penetración); B es falso."
+        },
+        { text: "¿Qué sucede cuando se utiliza un repetidor inalámbrico tradicional para extender la señal?",
+          options: ["Se mantiene el 100% de la capacidad de la red.", "Hay una pérdida del 50% de la capacidad del ancho de banda.", "La latencia disminuye automáticamente."],
+          correct: "B",
+          explanation: "Correcta (B): Repetidor usa mismo canal para recibir/transmitir, cortando ancho de banda a la mitad. A y C son falsos."
+        },
+        { text: "¿Cuál es la función del 'Backhaul' en una red de alto rendimiento?",
+          options: ["Es el cable que alimenta al Access Point para que pueda irradiar la demanda requerida.", "Es un software que limpia el virus de la señal Wi-Fi.", "Es la antena externa que capta la señal del ISP."],
+          correct: "A",
+          explanation: "Correcta (A): Backhaul cableado físico que alimenta al AP. B y C no tienen sustento."
+        },
+        { text: "¿Qué característica técnica es exclusiva de la próxima generación Wi-Fi 7 según las fuentes?",
+          options: ["Introducción de MU-MIMO.", "Multi-Link Operation (MLO) y latencia ultra-baja.", "Uso exclusivo de la banda 2.4 GHz."],
+          correct: "B",
+          explanation: "Correcta (B): MLO y latencia ultra-baja son novedades de Wi-Fi 7. MU-MIMO es de Wi-Fi 6; C es falso."
+        },
+        { text: "En la arquitectura de red híbrida (Blueprint), ¿para qué se recomienda usar la banda de 2.4 GHz?",
+          options: ["Para laptops que requieren alta velocidad.", "Para alimentar sensores IoT.", "Para streaming en 4K."],
+          correct: "B",
+          explanation: "Correcta (B): 2.4 GHz tiene alta penetración pero saturación, ideal para IoT. A y C requieren 5/6 GHz."
+        },
+        { text: "¿Qué tipo de cableado se sugiere para el backhaul que corre por los techos hacia los cuartos en una red moderna?",
+          options: ["Cable de teléfono estándar.", "Cables Cat6a.", "Fibra óptica plástica flexible."],
+          correct: "B",
+          explanation: "Correcta (B): Cat6a es el estándar para backhaul interno. Otros no se mencionan."
+        },
+        { text: "El 'Target Wake Time' (TWT) es una función de Wi-Fi 6 diseñada para:",
+          options: ["Aumentar la potencia de las antenas.", "Reducir el consumo energético de los dispositivos.", "Bloquear señales de vecinos."],
+          correct: "B",
+          explanation: "Correcta (B): TWT mejora eficiencia energética. A y C no son funciones del TWT."
+        },
+        { text: "¿Por qué se compara a la banda de 2.4 GHz con una 'Calle de Tierra'?",
+          options: ["Porque es muy rápida pero sucia.", "Por su baja cantidad de canales no solapados (3) y saturación crítica (Microondas, Bluetooth).", "Porque solo funciona en áreas rurales."],
+          correct: "B",
+          explanation: "Correcta (B): Limitación física: pocos canales y alta congestión. A es contradictoria (no es rápida); C es falso."
+        },
+        { text: "¿Qué componente de hardware se encarga de distribuir datos a 10 Gbps en el centro de la red híbrida?",
+          options: ["El Router del ISP.", "Un Switch Core Central.", "Un repetidor de pared."],
+          correct: "B",
+          explanation: "Correcta (B): Switch Core central gestiona 10 Gbps. Router ISP suele dar 1 Gbps; repetidor es ineficiente."
+        },
+        { text: "El concepto de 'Simetría del Backhaul Cableado' se refiere a:",
+          options: ["Que los cables deben medir lo mismo.", "Mantener la integridad estructural de la conexión desde el core hasta el dispositivo final sin pérdidas.", "Tener la misma velocidad de subida que de bajada únicamente en Wi-Fi."],
+          correct: "B",
+          explanation: "Correcta (B): Mantener capacidad del 100% sin pérdidas. A y C no corresponden."
+        },
+        { text: "¿Qué problema soluciona la 'Ingeniería del Espectro' (OFDMA y 6 GHz)?",
+          options: ["La falta de velocidad contratada con el ISP.", "La organización del tráfico en el aire compartido para eliminar el cuello de botella.", "El costo elevado de los equipos."],
+          correct: "B",
+          explanation: "Correcta (B): Organizan el tráfico inalámbrico. A no es el problema; C no es su objetivo."
+        },
+        { text: "Si un dispositivo Wi-Fi 5 tiene que enviar 20 paquetes, ¿cómo lo hace comparado con Wi-Fi 6 OFDMA?",
+          options: ["Los envía todos a la vez en un solo viaje.", "Realiza 20 viajes individuales, generando latencia extrema.", "No puede enviar más de 5 paquetes."],
+          correct: "B",
+          explanation: "Correcta (B): Wi-Fi 5 legacy hace viajes individuales. A es descripción de OFDMA; C es falso."
+        },
+        { text: "¿Cuál es el objetivo final de diseñar una red con Arquitectura Híbrida?",
+          options: ["Eliminar la congestión física y distribuir el tráfico espectral inteligentemente.", "Usar solo cables para no usar Wi-Fi.", "Que el router sea el más potente del mercado."],
+          correct: "A",
+          explanation: "Correcta (A): Integrar cableado e inalámbrico eficientemente. B es incorrecto (usa APs); C es reduccionista."
+        }
+    ];
+
+    let userAnswers = new Array(20).fill(null);
+    let currentIndex = 0;
+
+    const questionContainer = document.getElementById('questionContainer');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const questionCounterSpan = document.getElementById('questionCounter');
+    const liveScoreSpan = document.getElementById('liveScore');
+    const resultsPanel = document.getElementById('resultsPanel');
+
+    function updateLiveScore() {
+        let correctCount = 0;
+        for (let i = 0; i < userAnswers.length; i++) {
+            if (userAnswers[i] && userAnswers[i] === questionsData[i].correct) correctCount++;
+        }
+        liveScoreSpan.textContent = `✅ Aciertos: ${correctCount} / 20`;
+        return correctCount;
+    }
+
+    function saveAnswer(selectedLetter) {
+        userAnswers[currentIndex] = selectedLetter;
+        updateLiveScore();
+        renderCurrentQuestion();
+    }
+
+    function renderCurrentQuestion() {
+        const q = questionsData[currentIndex];
+        const selected = userAnswers[currentIndex];
+        const letters = ['A', 'B', 'C'];
+        let optionsHtml = '';
+        q.options.forEach((opt, idx) => {
+            const letter = letters[idx];
+            const isChecked = (selected === letter);
+            optionsHtml += `
+                <div class="option" data-letter="${letter}">
+                    <input type="radio" name="question" value="${letter}" id="opt_${letter}" ${isChecked ? 'checked' : ''}>
+                    <label for="opt_${letter}"><strong>${letter})</strong> ${opt}</label>
+                </div>
+            `;
+        });
+
+        let feedbackHtml = '';
+        if (selected) {
+            const isCorrect = (selected === q.correct);
+            const correctLetter = q.correct;
+            const correctText = q.options[letters.indexOf(correctLetter)];
+            const explanation = q.explanation;
+            if (isCorrect) {
+                feedbackHtml = `<div class="feedback correct">✅ <strong>¡Correcto!</strong> ${explanation}</div>`;
+            } else {
+                feedbackHtml = `<div class="feedback incorrect">❌ <strong>Incorrecto.</strong> La respuesta correcta es ${correctLetter}) ${correctText}.<br>${explanation}</div>`;
+            }
+        } else {
+            feedbackHtml = `<div class="feedback" style="border-left-color:#ffcf9a; background:#fff5e6;">⚡ Selecciona una opción para ver la retroalimentación.</div>`;
+        }
+
+        const html = `
+            <div class="question-card">
+                <div class="question-text">${q.text}</div>
+                <div class="options" id="optionsContainer">
+                    ${optionsHtml}
+                </div>
+                ${feedbackHtml}
+            </div>
+        `;
+        questionContainer.innerHTML = html;
+
+        // Event listeners
+        const optionDivs = document.querySelectorAll('.option');
+        optionDivs.forEach(div => {
+            const radio = div.querySelector('input[type="radio"]');
+            const letter = div.getAttribute('data-letter');
+            if (radio) {
+                radio.addEventListener('change', () => {
+                    if (radio.checked) saveAnswer(letter);
+                });
+            }
+            div.addEventListener('click', (e) => {
+                if (e.target.tagName !== 'INPUT') {
+                    const radioInside = div.querySelector('input');
+                    if (radioInside && !radioInside.checked) {
+                        radioInside.checked = true;
+                        saveAnswer(letter);
+                    }
+                }
+            });
+        });
+
+        questionCounterSpan.textContent = `Pregunta ${currentIndex+1} / 20`;
+    }
+
+    function showFinalResults() {
+        let correctCount = 0;
+        let detailsHtml = '';
+        for (let i = 0; i < questionsData.length; i++) {
+            const q = questionsData[i];
+            const userAns = userAnswers[i];
+            const isCorrect = (userAns === q.correct);
+            if (isCorrect) correctCount++;
+            const statusIcon = isCorrect ? '✅' : '❌';
+            const userShow = userAns ? userAns : '—';
+            const correctShow = q.correct;
+            detailsHtml += `
+                <div class="result-item">
+                    <span style="min-width: 30px;">${statusIcon}</span>
+                    <span><strong>Pregunta ${i+1}</strong> (Tu respuesta: ${userShow} / Correcta: ${correctShow})</span>
+                </div>
+            `;
+        }
+        const percent = Math.round((correctCount / 20) * 100);
+        resultsPanel.innerHTML = `
+            <h3>📊 Resultado final</h3>
+            <div class="result-summary">🎯 Aciertos: ${correctCount} de 20 (${percent}%)</div>
+            <div class="result-detail">${detailsHtml}</div>
+            <button id="closeResultsBtn" class="btn btn-secondary" style="margin-top: 10px; width:100%;">✖ Cerrar resumen</button>
+        `;
+        resultsPanel.style.display = 'block';
+        document.getElementById('closeResultsBtn')?.addEventListener('click', () => {
+            resultsPanel.style.display = 'none';
+        });
+        alert(`📊 Cuestionario completado.\nAciertos: ${correctCount} de 20 (${percent}%)\nRevisa el resumen detallado en pantalla.`);
+    }
+
+    function nextQuestion() {
+        if (currentIndex < 19) {
+            currentIndex++;
+            renderCurrentQuestion();
+        } else {
+            const unanswered = userAnswers.filter(a => a === null).length;
+            if (unanswered > 0) {
+                if (confirm(`Aún tienes ${unanswered} pregunta(s) sin responder. ¿Deseas finalizar de todas formas? Las no respondidas se contarán como incorrectas.`)) {
+                    showFinalResults();
+                }
+            } else {
+                showFinalResults();
+            }
+        }
+    }
+
+    function prevQuestion() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            renderCurrentQuestion();
+        } else {
+            alert("Ya estás en la primera pregunta.");
+        }
+    }
+
+    function resetQuiz() {
+        if (confirm("¿Reiniciar todo el cuestionario? Se perderán todas las respuestas.")) {
+            userAnswers = new Array(20).fill(null);
+            currentIndex = 0;
+            resultsPanel.style.display = 'none';
+            updateLiveScore();
+            renderCurrentQuestion();
+        }
+    }
+
+    prevBtn.addEventListener('click', prevQuestion);
+    nextBtn.addEventListener('click', nextQuestion);
+    resetBtn.addEventListener('click', resetQuiz);
+
+    renderCurrentQuestion();
+    updateLiveScore();
+</script>
+</body>
+</html>
